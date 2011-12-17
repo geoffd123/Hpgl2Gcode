@@ -25,19 +25,19 @@ require 'optparse'
       OptionParser.new do |opts|
         opts.banner = "Usage: hpgl2gcode [ option]"
         
-        opts.on("-t", "--thickness value", Float, "Board thickness") do |thickness|
+        opts.on("-t =value", "--thickness =value", Float, "Board thickness (default 0.0)") do |thickness|
           @thickness = thickness
         end
         
-        opts.on("-c", "--z_clearance value", Float, "Z Height for pen to clear board") do |z_clear|
+        opts.on("-c =value", "--z_clearance =value", Float, "Z Height for pen to clear board (default 3.0mm)") do |z_clear|
           @z_clear = z_clear
         end
         
-        opts.on("-i", "--input path", String, "Path to input (hpgl)") do |fn|
+        opts.on("-i =path", "--input =path", String, "Path to input (hpgl)") do |fn|
           @input_filename = fn
         end
         
-        opts.on("-o", "--output path", String, "Path to output (gcode)") do |fn|
+        opts.on("-o =path", "--output =path", String, "Path to output (gcode)") do |fn|
           @output_filename = fn
         end
         
@@ -49,6 +49,10 @@ require 'optparse'
         begin
           argv = ["-h"] if argv.empty?
           opts.parse!(argv)
+          if @input_filename.empty?
+            print("You must specify an input file\n")
+            exit(-1)
+          end
         rescue OptionParser::ParseError => e
               STDERR.puts e.message, "\n", opts
               exit(-1)
