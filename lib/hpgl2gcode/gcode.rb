@@ -40,9 +40,9 @@ class Hpgl2gcode
     
     def process(line_num, l)
       if l.starts_with?('PU') 
-        return("G1 Z3\n")
+        return("G1 Z#{@opts.z_clear}\n")
       elsif l.starts_with?('PD') 
-        return("G1 Z0\n")
+        return("G1 Z#{@opts.thickness}\n")
       elsif l.starts_with?('PA') 
         pos = l.match(/(\w+),(\w+);/)
         # p pos
@@ -65,32 +65,14 @@ class Hpgl2gcode
     end
     
     
-    def process_cmdline
+    def process_cmdline args
+      @opts = Options.new(args)
     end
     
-    # 
-    # def process_command(cmd)
-    #   args = Array(cmd)
-    #   command = args.shift
-    #   case(command)
-    #   when "+" 
-    #     add_task(args[0])     
-    #   when "@" 
-    #     t = tasks 
-    #     puts t.empty? ? "Looks like you have nothing to do.\n" : t
-    # 
-    #   # ... other commands omitted
-    # 
-    #   else
-    #     puts "Que?" 
-    #   end
-    # end
-
-    def execute
-      process_cmdline()
-    
-    
-      lines = IO.readlines("./test.hpgl", ";")
+     def execute
+      process_cmdline(ARGV)
+ 
+      lines = IO.readlines("test.hpgl", ";")
       lines.each_with_index{|l, i| 
         r = process(i, l.strip)
         print r unless r.nil? || r.empty?
