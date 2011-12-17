@@ -40,6 +40,21 @@ describe "hpgl2gcode" do
       @uut.process_cmdline(['-c', '6.5'])
       @uut.process(1, "PU;").should eql("G1 Z6.5\n")
     end
+
+    it "should read the correct input file and write the correct output file" do
+      opname = "spec/results/basic.gcode" 
+      ARGV.clear.push *%w(-i spec/data/basic.hpgl -o)
+      ARGV.push opname
+      File.delete(opname) if File.exists?(opname)
+      @uut.execute()
+      File.exists?(opname).should eql(true)
+      
+      
+      expected = IO.readlines("spec/expected/basic.gcode")
+      actual = IO.readlines(opname)
+      expected.should eql(actual)
+    end
+
   end
   
   context "Parse commandline correctly" do
@@ -62,5 +77,16 @@ describe "hpgl2gcode" do
       opts = Options.new(["--z_clearance", "3.5"])
       opts.z_clear.should eql(3.5)      
     end
+
+    it "should setup input filename" do
+      opts = Options.new(["-i", "test.hpgl"])
+      opts.input_filename.should eql("test.hpgl")      
+    end
+
+    it "should setup output filename" do
+      opts = Options.new(["-o", "test.gcode"])
+      opts.output_filename.should eql("test.gcode")      
+    end
+
   end
 end

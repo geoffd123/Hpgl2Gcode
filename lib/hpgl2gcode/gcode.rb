@@ -75,11 +75,13 @@ class Hpgl2gcode
      def execute
       process_cmdline(ARGV)
  
-      lines = IO.readlines("test.hpgl", ";")
+      outfile = File.open(@opts.output_filename, "w")
+      lines = IO.readlines(@opts.input_filename, ";")
       lines.each_with_index{|l, i| 
         r = process(i, l.strip)
-        print r unless r.nil? || r.empty?
+        outfile.print r unless r.nil? || r.empty?
       }
+      outfile.close
     end
 end
 
