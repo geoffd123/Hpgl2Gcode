@@ -1,0 +1,8 @@
+#! /usr/bin/ruby
+
+require 'lib/hpgl2gcode/gcode'
+require 'lib/hpgl2gcode/options'
+
+app = Hpgl2gcode.new
+app.execute()
+ 
