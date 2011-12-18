@@ -1,0 +1,47 @@
+= hpgl2gcode - A HPGL to GCode converter.
+
+Hpgl2gcode is a simple conversion program for taking the output of the Eagle HPGL Cam Processor and converting it to a form
+that is understood by a RepRap 3D printer with a Pen holder.
+
+
+== Installing
+
+   Execute a git clone into a working directory.
+
+   *git clone git@github.com:geoffd123/Hpgl2Gcode.git*
+	
+   Ensure you have Ruby installed on your system
+
+   * ruby -v
+   
+   This should return the version number of the accessible ruby, if it says 'not found' you will need to install it on your system  	
+
+== Creating input files
+
+   In the 'cam' directory you will find a sample Eagle cam job that will produce the correct output, you will need to 
+   set the correct pen size, offset etc for your machine.
+
+   This will save the output as {board_name}.top.hpgl and {board_name}.bot.hpgl.
+
+== Running hpgl2gcode
+
+   In a command line session change into where you have cloned hpgl2gcode
+
+   *hpgl2gcode -h* will list the available options.
+
+    *-t, --thickness value*          Board thickness in mm (default 0.0) this is the height the pen will draw at.
+    *-c, --z_clearance value*        Z Height for pen to clear board (default 3.0mm).
+    *-i, --input path*               Path to input (hpgl) *mandatory*
+    *-o, --output path*              Path to output (gcode) defaults to input file with .gcode extension
+    *-h, --help*                     Show help message
+  
+    *hpgl2gcode -i pcb/mypcb.bot.hpgl -t 1.5*  will produce an output file of pcb/mypcb.bot.gcode with a drawing height of 1.5mm.
+
+Distributed under the MIT License, all rights reserved 2011 Geoff Drake
+
+== Source
+The source is available on GitHub at https://github.com/geoffd123/Hpl2Gcode
+
+=== 0.0.1
+Initial version supporting PU, PD, PA and AA as circles, not arcs.
+
