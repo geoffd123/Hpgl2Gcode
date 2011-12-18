@@ -12,7 +12,7 @@ that is understood by a RepRap 3D printer with a Pen holder.
 	
    Ensure you have Ruby installed on your system
 
-   * ruby -v
+   *ruby -v*
    
    This should return the version number of the accessible ruby, if it says 'not found' you will need to install it on your system  	
 
