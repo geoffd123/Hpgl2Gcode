@@ -1,3 +1,4 @@
+require 'pathname'
 require 'optparse'
 
 #module Hpgl2gcode
@@ -37,7 +38,7 @@ require 'optparse'
           @input_filename = fn
         end
         
-        opts.on("-o =path", "--output =path", String, "Path to output (gcode)") do |fn|
+        opts.on("-o =path", "--output =path", String, "Path to output (gcode) defaults to input file with .gcode extension") do |fn|
           @output_filename = fn
         end
         
@@ -52,6 +53,16 @@ require 'optparse'
           if @input_filename.empty?
             print("You must specify an input file\n")
             exit(-1)
+          end
+          
+          if @output_filename.nil? || @output_filename.empty?
+            # replace .hpgl with .gcode
+            input_path = Pathname.new(@input_filename)
+            extn = input_path.extname
+            pa = input_path.split
+            pa[pa.count-1] = pa[pa.count-1].sub(extn, ".gcode")
+            po = Pathname.new(pa.join('/'))
+            @output_filename = po.cleanpath.to_s
           end
         rescue OptionParser::ParseError => e
               STDERR.puts e.message, "\n", opts

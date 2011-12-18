@@ -83,9 +83,14 @@ describe "hpgl2gcode" do
       opts.input_filename.should eql("test.hpgl")      
     end
 
-    it "should setup output filename" do
-      opts = Options.new(["-o", "test.gcode", "-i", "test.gcode"])
+    it "should setup defult output filename if -o is missing" do
+      opts = Options.new(["-i", "test.hpgl"])
       opts.output_filename.should eql("test.gcode")      
+    end
+
+    it "should setup output filename" do
+      opts = Options.new(["-o", "test2.gcode", "-i", "test.gcode"])
+      opts.output_filename.should eql("test2.gcode")      
     end
 
   end
