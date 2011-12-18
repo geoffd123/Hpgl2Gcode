@@ -11,12 +11,16 @@ require 'optparse'
     attr_reader :input_filename
     attr_reader :output_filename
     attr_reader :thickness
+    attr_reader :feedrate
+    attr_reader :travelrate
     attr_reader :z_clear
     
     def initialize(argv)
       @thickness = DEFAULT_THICKNESS
       @z_clear = DEFAULT_Z_CLEAR
       @input_filename = "";
+      @feedrate = 5.0
+      @travelrate = 60.0
       parse(argv)
     end
   
@@ -32,6 +36,14 @@ require 'optparse'
         
         opts.on("-c =value", "--z_clearance =value", Float, "Z Height for pen to clear board (default 3.0mm)") do |z_clear|
           @z_clear = z_clear
+        end
+        
+        opts.on("-f =value", "--feedrate =value", Float, "Feedrate for drawing (default 5.0mm/s)") do |feedrate|
+          @feedrate = feedrate
+        end
+        
+        opts.on("-r =value", "--travelrate =value", Float, "Travelrate for moving  (default 60.0mm/s)") do |travelrate|
+          @travelrate = travelrate
         end
         
         opts.on("-i =path", "--input =path", String, "Path to input (hpgl)") do |fn|

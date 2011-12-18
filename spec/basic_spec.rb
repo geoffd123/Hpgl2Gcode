@@ -23,12 +23,22 @@ describe "hpgl2gcode" do
       @uut.process(1, "PD;").should eql("G1 Z0.0\n")
     end
   
-    it "should output a g1 draw command when PA received" do
-      @uut.process(1, "PA 959,1855;").should eql("G1 X23.975 Y46.375\n")
+    it "should output a g1 draw with draw feedrate when pen is down" do
+      @uut.process_cmdline(["-f", "10.3", "-i", "test.gcode"])
+      @uut.pendown=true
+      @uut.process(1, "PA 959,1855;").should eql("G1 X23.975 Y46.375 F10.3\n")
+    end
+    
+    it "should output a g1 draw with travel feedrate when pen is up" do
+      @uut.process_cmdline(["-t", "60", "-i", "test.gcode"])
+      @uut.pendown=false
+      @uut.process(1, "PA 959,1855;").should eql("G1 X23.975 Y46.375 F60.0\n")
     end
     
     it "should output a g1 draw with 1mm X 2mm Y when PA received" do
-      @uut.process(1, "PA 40,80;").should eql("G1 X1.0 Y2.0\n")
+      @uut.process_cmdline(["-f", "10.7", "-i", "test.gcode"])
+      @uut.pendown = true
+      @uut.process(1, "PA 40,80;").should eql("G1 X1.0 Y2.0 F10.7\n")
     end
   
     it "should set the correct Z value when a thickness parameter has been set" do
@@ -52,7 +62,7 @@ describe "hpgl2gcode" do
       
       expected = IO.readlines("spec/expected/basic.gcode")
       actual = IO.readlines(opname)
-      expected.should eql(actual)
+      actual.should eql(expected)
     end
 
   end
@@ -83,7 +93,7 @@ describe "hpgl2gcode" do
       opts.input_filename.should eql("test.hpgl")      
     end
 
-    it "should setup defult output filename if -o is missing" do
+    it "should setup default output filename if -o is missing" do
       opts = Options.new(["-i", "test.hpgl"])
       opts.output_filename.should eql("test.gcode")      
     end
@@ -93,5 +103,15 @@ describe "hpgl2gcode" do
       opts.output_filename.should eql("test2.gcode")      
     end
 
+    it "should parse a -f feedrate correctly" do
+      opts = Options.new(["-f", "10", "-i", "test.gcode"])
+      opts.feedrate.should eql(10.0)      
+    end
+    
+    it "should parse a -tr travelrate correctly" do
+      opts = Options.new(["-r", "10", "-i", "test.gcode"])
+      opts.travelrate.should eql(10.0)      
+    end
+    
   end
 end

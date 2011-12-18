@@ -10,6 +10,9 @@ class String
 end
 
 class Hpgl2gcode
+  
+  attr_accessor :pendown
+  
   def hp2mm(value)
     if (value.class == String)
       value = value.to_f
@@ -36,23 +39,28 @@ class Hpgl2gcode
       pi = 3.141
       
       0.step(2.0 * pi, 2.0 * pi / 15.0) {|i|
-        result += "G1 X#{limit_acc(x_centre + rad * Math.cos(i))} Y#{limit_acc(y_centre+rad*Math.sin(i))}\n"
+        result += "G1 X#{limit_acc(x_centre + rad * Math.cos(i))} Y#{limit_acc(y_centre+rad*Math.sin(i))} F#{@opts.feedrate}\n"
       }
       result
     end
     
     def process(line_num, l)
-      if l.starts_with?('PU') 
+      if l.starts_with?('PU')
+        @pendown = false 
         return("G1 Z#{@opts.z_clear}\n")
-      elsif l.starts_with?('PD') 
+        
+      elsif l.starts_with?('PD')
+        @pendown = true 
         return("G1 Z#{@opts.thickness}\n")
       elsif l.starts_with?('PA') 
         pos = l.match(/(\w+),(\w+);/)
         # p pos
         @current_x = hp2mm(pos[1])
         @current_y = hp2mm(pos[2])
-        return ("G1 X#{@current_x} Y#{@current_y}\n")
+        fr = (@pendown) ? @opts.feedrate : @opts.travelrate
+        return ("G1 X#{@current_x} Y#{@current_y} F#{fr}\n")
       elsif l.starts_with? 'IN'
+        @pendown = true
         return "G21\nG90\n"
       elsif l.starts_with? 'IP'
       elsif l.starts_with? 'SP'
