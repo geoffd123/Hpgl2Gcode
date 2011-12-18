@@ -31,6 +31,9 @@ that is understood by a RepRap 3D printer with a Pen holder.
 
     *-t, --thickness value*          Board thickness in mm (default 0.0) this is the height the pen will draw at.
     *-c, --z_clearance value*        Z Height for pen to clear board (default 3.0mm).
+    *-f, --feedrate =value*          Feedrate for drawing (default 5.0mm/s)
+    *-r, --travelrate =value*        Travelrate for moving X, Y axis (default 60.0mm/s)
+    *-z, --zrate =value              Travelrate for moving Z Axis  (default 5.0mm/s)
     *-i, --input path*               Path to input (hpgl) *mandatory*
     *-o, --output path*              Path to output (gcode) defaults to input file with .gcode extension
     *-h, --help*                     Show help message
