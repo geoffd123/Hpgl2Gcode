@@ -47,11 +47,11 @@ class Hpgl2gcode
     def process(line_num, l)
       if l.starts_with?('PU')
         @pendown = false 
-        return("G1 Z#{@opts.z_clear}\n")
+        return("G1 Z#{@opts.z_clear} F#{@opts.zrate}\n")
         
       elsif l.starts_with?('PD')
         @pendown = true 
-        return("G1 Z#{@opts.thickness}\n")
+        return("G1 Z#{@opts.thickness} F#{@opts.zrate}\n")
       elsif l.starts_with?('PA') 
         pos = l.match(/(\w+),(\w+);/)
         # p pos

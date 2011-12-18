@@ -11,7 +11,7 @@ describe "hpgl2gcode" do
     
     it "should output a g1 up command when PU received" do
       @uut.process_cmdline(["-t", "4", "-i", "test.gcode"])
-      @uut.process(1, "PU;").should eql("G1 Z3.0\n")
+      @uut.process(1, "PU;").should eql("G1 Z3.0 F5.0\n")
     end
   
     it "should output a g21 g90 when IN received" do
@@ -20,7 +20,7 @@ describe "hpgl2gcode" do
   
     it "should output a g1 down command when PD received" do
       @uut.process_cmdline(["-c", "4", "-i", "test.gcode"])
-      @uut.process(1, "PD;").should eql("G1 Z0.0\n")
+      @uut.process(1, "PD;").should eql("G1 Z0.0 F5.0\n")
     end
   
     it "should output a g1 draw with draw feedrate when pen is down" do
@@ -43,12 +43,12 @@ describe "hpgl2gcode" do
   
     it "should set the correct Z value when a thickness parameter has been set" do
       @uut.process_cmdline(['-t', '2.5', "-i", "test.gcode"])
-      @uut.process(1, "PD;").should eql("G1 Z2.5\n")
+      @uut.process(1, "PD;").should eql("G1 Z2.5 F5.0\n")
     end
   
     it "should set the correct Z value when a z_clear parameter has been set" do
       @uut.process_cmdline(['-c', '6.5', "-i", "test.gcode"])
-      @uut.process(1, "PU;").should eql("G1 Z6.5\n")
+      @uut.process(1, "PU;").should eql("G1 Z6.5 F5.0\n")
     end
 
     it "should read the correct input file and write the correct output file" do
@@ -108,9 +108,14 @@ describe "hpgl2gcode" do
       opts.feedrate.should eql(10.0)      
     end
     
-    it "should parse a -tr travelrate correctly" do
+    it "should parse a -r travelrate correctly" do
       opts = Options.new(["-r", "10", "-i", "test.gcode"])
       opts.travelrate.should eql(10.0)      
+    end
+    
+    it "should parse a -z travelrate correctly" do
+      opts = Options.new(["-z", "11", "-i", "test.gcode"])
+      opts.zrate.should eql(11.0)      
     end
     
   end

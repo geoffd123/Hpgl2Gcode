@@ -13,6 +13,7 @@ require 'optparse'
     attr_reader :thickness
     attr_reader :feedrate
     attr_reader :travelrate
+    attr_reader :zrate
     attr_reader :z_clear
     
     def initialize(argv)
@@ -21,6 +22,7 @@ require 'optparse'
       @input_filename = "";
       @feedrate = 5.0
       @travelrate = 60.0
+      @zrate = 5.0
       parse(argv)
     end
   
@@ -44,6 +46,10 @@ require 'optparse'
         
         opts.on("-r =value", "--travelrate =value", Float, "Travelrate for moving  (default 60.0mm/s)") do |travelrate|
           @travelrate = travelrate
+        end
+        
+        opts.on("-z =value", "--zrate =value", Float, "Travelrate for moving Z Axis  (default 5.0mm/s)") do |zrate|
+          @zrate = zrate
         end
         
         opts.on("-i =path", "--input =path", String, "Path to input (hpgl)") do |fn|

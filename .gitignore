@@ -1,2 +1,3 @@
 *.tmproj
 test.gcode
+spec/results/*
