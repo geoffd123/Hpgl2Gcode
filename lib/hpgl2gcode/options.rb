@@ -20,9 +20,9 @@ require 'optparse'
       @thickness = DEFAULT_THICKNESS
       @z_clear = DEFAULT_Z_CLEAR
       @input_filename = "";
-      @feedrate = 5.0
-      @travelrate = 60.0
-      @zrate = 5.0
+      @feedrate = 300.0
+      @travelrate = 3600.0
+      @zrate = 300.0
       parse(argv)
     end
   
@@ -40,15 +40,15 @@ require 'optparse'
           @z_clear = z_clear
         end
         
-        opts.on("-f =value", "--feedrate =value", Float, "Feedrate for drawing (default 5.0mm/s)") do |feedrate|
+        opts.on("-f =value", "--feedrate =value", Float, "Feedrate for drawing (default 300.0mm/min)") do |feedrate|
           @feedrate = feedrate
         end
         
-        opts.on("-r =value", "--travelrate =value", Float, "Travelrate for moving  (default 60.0mm/s)") do |travelrate|
+        opts.on("-r =value", "--travelrate =value", Float, "Travelrate for moving  (default 3600.0mm/min)") do |travelrate|
           @travelrate = travelrate
         end
         
-        opts.on("-z =value", "--zrate =value", Float, "Travelrate for moving Z Axis  (default 5.0mm/s)") do |zrate|
+        opts.on("-z =value", "--zrate =value", Float, "Travelrate for moving Z Axis  (default 300.0min/s)") do |zrate|
           @zrate = zrate
         end
         

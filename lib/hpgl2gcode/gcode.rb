@@ -61,7 +61,7 @@ class Hpgl2gcode
         return ("G1 X#{@current_x} Y#{@current_y} F#{fr}\n")
       elsif l.starts_with? 'IN'
         @pendown = true
-        return "G21\nG90\n"
+        return "G21\nG90\nG1 Z#{@opts.z_clear} F#{@opts.zrate}\n"
       elsif l.starts_with? 'IP'
       elsif l.starts_with? 'SP'
       elsif l.starts_with? 'SC'

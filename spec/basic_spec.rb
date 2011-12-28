@@ -11,16 +11,17 @@ describe "hpgl2gcode" do
     
     it "should output a g1 up command when PU received" do
       @uut.process_cmdline(["-t", "4", "-i", "test.gcode"])
-      @uut.process(1, "PU;").should eql("G1 Z3.0 F5.0\n")
+      @uut.process(1, "PU;").should eql("G1 Z3.0 F300.0\n")
     end
   
-    it "should output a g21 g90 when IN received" do
-      @uut.process(1, "IN;").should eql("G21\nG90\n")
+    it "should output a g21 g90 G1 Z3.0 when IN received" do
+      @uut.process_cmdline(["-i", "test.gcode"])
+      @uut.process(1, "IN;").should eql("G21\nG90\nG1 Z3.0 F300.0\n")
     end
   
     it "should output a g1 down command when PD received" do
       @uut.process_cmdline(["-c", "4", "-i", "test.gcode"])
-      @uut.process(1, "PD;").should eql("G1 Z0.0 F5.0\n")
+      @uut.process(1, "PD;").should eql("G1 Z0.0 F300.0\n")
     end
   
     it "should output a g1 draw with draw feedrate when pen is down" do
@@ -32,7 +33,7 @@ describe "hpgl2gcode" do
     it "should output a g1 draw with travel feedrate when pen is up" do
       @uut.process_cmdline(["-t", "60", "-i", "test.gcode"])
       @uut.pendown=false
-      @uut.process(1, "PA 959,1855;").should eql("G1 X23.975 Y46.375 F60.0\n")
+      @uut.process(1, "PA 959,1855;").should eql("G1 X23.975 Y46.375 F3600.0\n")
     end
     
     it "should output a g1 draw with 1mm X 2mm Y when PA received" do
@@ -43,12 +44,12 @@ describe "hpgl2gcode" do
   
     it "should set the correct Z value when a thickness parameter has been set" do
       @uut.process_cmdline(['-t', '2.5', "-i", "test.gcode"])
-      @uut.process(1, "PD;").should eql("G1 Z2.5 F5.0\n")
+      @uut.process(1, "PD;").should eql("G1 Z2.5 F300.0\n")
     end
   
     it "should set the correct Z value when a z_clear parameter has been set" do
       @uut.process_cmdline(['-c', '6.5', "-i", "test.gcode"])
-      @uut.process(1, "PU;").should eql("G1 Z6.5 F5.0\n")
+      @uut.process(1, "PU;").should eql("G1 Z6.5 F300.0\n")
     end
 
     it "should read the correct input file and write the correct output file" do
