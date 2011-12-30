@@ -38,41 +38,45 @@ class Hpgl2gcode
       
       pi = 3.141
       
-      0.step(2.0 * pi, 2.0 * pi / 15.0) {|i|
+      0.step((arc_degrees.to_f/360.0) * 2.0 * pi, 2.0 * pi / 15.0) {|i|
         result += "G1 X#{limit_acc(x_centre + rad * Math.cos(i))} Y#{limit_acc(y_centre+rad*Math.sin(i))} F#{@opts.feedrate}\n"
       }
       result
     end
     
     def process(line_num, l)
-      if l.starts_with?('PU')
-        @pendown = false 
-        return("G1 Z#{@opts.z_clear} F#{@opts.zrate}\n")
-        
-      elsif l.starts_with?('PD')
-        @pendown = true 
-        return("G1 Z#{@opts.thickness} F#{@opts.zrate}\n")
-      elsif l.starts_with?('PA') 
-        pos = l.match(/(\w+),(\w+);/)
-        # p pos
-        @current_x = hp2mm(pos[1])
-        @current_y = hp2mm(pos[2])
-        fr = (@pendown) ? @opts.feedrate : @opts.travelrate
-        return ("G1 X#{@current_x} Y#{@current_y} F#{fr}\n")
-      elsif l.starts_with? 'IN'
-        @pendown = true
-        return "G21\nG90\nG1 Z#{@opts.z_clear} F#{@opts.zrate}\n"
-      elsif l.starts_with? 'IP'
-      elsif l.starts_with? 'SP'
-      elsif l.starts_with? 'SC'
-      elsif l.starts_with? 'AA'
-        pos = l.match(/(\w+),(\w+),(\w+);/)
-        return plot_polycircle(hp2mm(pos[1]), hp2mm(pos[2]), pos[3].to_i)
-      elsif l.empty?
-      else 
-        $stderr.print("Line #{line_num}: '#{l}' : is not handled\n")
+      begin
+        if l.starts_with?('PU')
+          @pendown = false 
+          return("G1 Z#{@opts.z_clear} F#{@opts.zrate}\n")
+          
+        elsif l.starts_with?('PD')
+          @pendown = true 
+          return("G1 Z#{@opts.thickness} F#{@opts.zrate}\n")
+        elsif l.starts_with?('PA') 
+          pos = l.match(/(\w+),(\w+);/)
+          # p pos
+          @current_x = hp2mm(pos[1])
+          @current_y = hp2mm(pos[2])
+          fr = (@pendown) ? @opts.feedrate : @opts.travelrate
+          return ("G1 X#{@current_x} Y#{@current_y} F#{fr}\n")
+        elsif l.starts_with? 'IN'
+          @pendown = true
+          return "G21\nG90\nG1 Z#{@opts.z_clear} F#{@opts.zrate}\n"
+        elsif l.starts_with? 'IP'
+        elsif l.starts_with? 'SP'
+        elsif l.starts_with? 'SC'
+        elsif l.starts_with? 'AA'
+          pos = l.match(/([0-9.-]+),([0-9.-]+),([0-9.-]+);/)
+          return plot_polycircle(hp2mm(pos[1]), hp2mm(pos[2]), pos[3].to_i)
+        elsif l.empty?
+        else 
+          $stderr.print("Line #{line_num}: '#{l}' : is not handled\n")
+        end
+        return ""
+      rescue Exception => e
+        $stderr.print("Exception #{e.message} occurred on line #{line_num} HPGL: #{l}\n")
       end
-      return ""
     end
     
     

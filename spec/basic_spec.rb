@@ -68,6 +68,29 @@ describe "hpgl2gcode" do
 
   end
   
+  context "process AA commands correctly" do
+    it "should handle full arcs" do
+      @uut.process_cmdline(["-i", "test.gcode"])
+      @uut.process(1, "PA 529,67;").should eql("G1 X13.225 Y1.675 F3600.0\n")
+      @uut.process(2, "AA 529,61,360.00;").should eql("G1 X13.225 Y1.525\nG1 X13.377 Y1.526 F300.0\nG1 X13.364 Y1.587 F300.0\nG1 X13.327 Y1.638 F300.0\nG1 X13.273 Y1.67 F300.0\nG1 X13.21 Y1.676 F300.0\nG1 X13.151 Y1.657 F300.0\nG1 X13.104 Y1.615 F300.0\nG1 X13.078 Y1.557 F300.0\nG1 X13.078 Y1.495 F300.0\nG1 X13.104 Y1.437 F300.0\nG1 X13.15 Y1.395 F300.0\nG1 X13.21 Y1.376 F300.0\nG1 X13.273 Y1.382 F300.0\nG1 X13.327 Y1.414 F300.0\nG1 X13.364 Y1.464 F300.0\nG1 X13.377 Y1.526 F300.0\n")
+    end
+
+    it "should handle partial" do
+      @uut.process_cmdline(["-i", "test.gcode"])
+      @uut.process(1, "PA 529,67;").should eql("G1 X13.225 Y1.675 F3600.0\n")
+      @uut.process(2, "AA 529,61,180.00;").should eql("G1 X13.225 Y1.525\nG1 X13.377 Y1.526 F300.0\nG1 X13.364 Y1.587 F300.0\nG1 X13.327 Y1.638 F300.0\nG1 X13.273 Y1.67 F300.0\nG1 X13.21 Y1.676 F300.0\nG1 X13.151 Y1.657 F300.0\nG1 X13.104 Y1.615 F300.0\nG1 X13.078 Y1.557 F300.0\n")
+    end
+
+  end
+  
+  context "handle ruby exceptions" do
+    it "should report exceptions" do
+      $stderr.should_receive(:print).with("Exception nil can't be coerced into Float occurred on line 1 HPGL: AA 52A9,61,180.00;\n")
+      @uut.process(1, "AA 52A9,61,180.00;")
+    end
+  end
+  
+  
   context "Parse commandline correctly" do
     it "should parse a -t correctly" do
       opts = Options.new(["-t", "0.5", "-i", "test.gcode"])
