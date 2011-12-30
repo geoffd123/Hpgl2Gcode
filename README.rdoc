@@ -42,6 +42,8 @@ that is understood by a RepRap 3D printer with a Pen holder.
 
 Distributed under the MIT License, all rights reserved 2011 Geoff Drake
 
+You can follow the progress of using this software to plot PCB's at http://apapageek.blogspot.com
+
 == Source
 The source is available on GitHub at https://github.com/geoffd123/Hpl2Gcode
 
